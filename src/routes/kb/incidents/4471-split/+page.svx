@@ -2,9 +2,9 @@
 layout: runbook
 title: '#4471 split · dates parse mm/dd in eu locales and booking-v3 form placeholder hint'
 owner: Patryk Klesta
-signature: v1.eyJzdWIiOiIxNDU3IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTM0NjU1MTgsImV4cCI6MTc5MzU1MTkxOH0.ZuFTz_jbC0kf0wKPX9BRmxBJydXDOoEkndEx_Gi6eCo
-status: accepted
-reviewed: 2026-10-31
+signature: v1.eyJzdWIiOiIxNDU3IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTM0NjU2MjgsImV4cCI6MTc5MzU1MjAyOH0.ey6uBLif7tuceE0L85_vksisyWCYTHiSPKOfXSic4t8
+status: closed
+reviewed: 2026-10-05
 ---
 
 <script>
@@ -13,41 +13,34 @@ reviewed: 2026-10-31
   import Callout from '#lib/kb/Callout.svelte';
   import RenderStamp from '#lib/kb/RenderStamp.svelte';
 
-  const signature = 'v1.eyJzdWIiOiIxNDU3IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTM0NjU1MTgsImV4cCI6MTc5MzU1MTkxOH0.ZuFTz_jbC0kf0wKPX9BRmxBJydXDOoEkndEx_Gi6eCo';
+  const signature = 'v1.eyJzdWIiOiIxNDU3IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTM0NjU2MjgsImV4cCI6MTc5MzU1MjAyOH0.ey6uBLif7tuceE0L85_vksisyWCYTHiSPKOfXSic4t8';
 </script>
 
 Ticket #4471 merged 412 incoming customer reports about dates landing on the wrong day.
 While merging by subject under Decision 0001 enabled rapid triage during morning incident peaks,
-detailed investigation demonstrates that two distinct engineering defects are conflated in #4471.
+detailed investigation demonstrates that two distinct engineering defects were conflated in #4471.
 
-We have filed two separate issues on GitHub:
-- **Issue #1 (379 reports):** Shared calendar parser assumes month-first format (MM/DD) in European and day-first locales.
-- **Issue #2 (33 reports):** Booking-v3 form component displays a hardcoded MM/DD/YYYY placeholder hint to users in day-first locales.
+We filed two separate issues on GitHub, now closed following the 05 Oct engineering resolution:
+- **Issue #1 (379 reports · parser):** **fixed** with `fix(dates): parse dd/mm for eu locales`.
+- **Issue #2 (33 reports · hint):** **won't fix** because `booking-v3 form retired`.
 
 <Callout>
-Resolved conflation: Split #4471 into two isolated root causes with separate reproduction and repair paths.
+Closed 05 Oct: Parser bug fixed in sched-prod; booking-v3 form retired.
 </Callout>
 
-## The Two Defects
+## The Two Defects & Resolutions
 
-### 1. Parser Month-First Assumption (Issue #1 · 379 reports)
-The backend parser reads all dates month-first (`MM/DD`). For European and day-first locales
+### 1. Parser Month-First Assumption (Issue #1 · 379 reports) · FIXED
+The backend parser read all dates month-first (`MM/DD`). For European and day-first locales
 (`da-DK`, `pl-PL`, `cs-CZ`, `nl-NL`, `de-DE`, `it-IT`, `pt-PT`, `es-ES`, `en-GB`, `en-IE`, `fr-FR`),
-appointments on days 1–12 are inverted (e.g. 7 April becomes 4 July).
+appointments on days 1–12 were inverted.
 - **Volume:** 379 reports (92.0% of queue)
-- **Tenants (11):** `alder.physio`, `copper.studio`, `harbour.dental`, `kettle.books`, `lantern.row`, `long.table`, `morrow.tax`, `nine.lanterns`, `pale.harbour`, `ridge.clinic`, `stone.and.sons`
-- **Channels:** App (204), Email (150), Form (25)
-- **Time Window:** 2026-04-01 to 2026-10-04
-- **Desk Notes:** 5 reports (`R-41202`, `R-41209`, `R-41236`, `R-41344`, `R-41620`) were noted as one-day shifts, but correctly belong under parser logic.
+- **Status:** Fixed via `fix(dates): parse dd/mm for eu locales`.
 
-### 2. Booking-v3 Placeholder Hint Mismatch (Issue #2 · 33 reports)
-In the `booking-v3` web frontend, the date input field renders a hardcoded `MM/DD/YYYY` helper label.
-Users in day-first locales dutifully follow the prompt and type the month first. When submitted, the tenant's
-day-first configuration parses the month as the day, inverting the booking date.
+### 2. Booking-v3 Placeholder Hint Mismatch (Issue #2 · 33 reports) · RETIRED
+In the `booking-v3` web frontend, the date input field rendered a hardcoded `MM/DD/YYYY` helper label.
 - **Volume:** 33 reports (8.0% of queue)
-- **Tenants (3):** `alder.physio` (de-DE), `copper.studio` (es-ES), `pale.harbour` (pt-PT)
-- **Channels:** 100% web Form (33)
-- **Time Window:** 2026-04-17 to 2026-09-22
+- **Status:** Closed as won't fix (`booking-v3 form retired`).
 
 ## Cause Breakdown for #4471
 
@@ -60,6 +53,6 @@ day-first configuration parses the month as the day, inverting the booking date.
 ## Lessons for Support & Engineering
 
 - Merging by subject line is essential for high-throughput incident triage, but must be followed by root-cause clustering before assigning fixes.
-- A single user symptom ("my booking is on the wrong date") can stem from backend parsing or frontend input guidance.
+- Track distinct dispositions: backend bug fixed, frontend form retired.
 
 <RenderStamp {signature} />

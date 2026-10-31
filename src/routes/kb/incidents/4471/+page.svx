@@ -2,9 +2,9 @@
 layout: runbook
 title: '#4471 · dates parse mm/dd in eu locales'
 owner: support desk
-signature: v1.eyJzdWIiOiIxNDU3IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTM0NjU1MTgsImV4cCI6MTc5MzU1MTkxOH0.ZuFTz_jbC0kf0wKPX9BRmxBJydXDOoEkndEx_Gi6eCo
-status: known
-reviewed: 2026-10-31
+signature: v1.eyJzdWIiOiIxNDU3IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTM0NjU2MjgsImV4cCI6MTc5MzU1MjAyOH0.ey6uBLif7tuceE0L85_vksisyWCYTHiSPKOfXSic4t8
+status: closed
+reviewed: 2026-10-05
 ---
 
 <script>
@@ -13,22 +13,22 @@ reviewed: 2026-10-31
   import Callout from '#lib/kb/Callout.svelte';
   import RenderStamp from '#lib/kb/RenderStamp.svelte';
 
-  const signature = 'v1.eyJzdWIiOiIxNDU3IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTM0NjU1MTgsImV4cCI6MTc5MzU1MTkxOH0.ZuFTz_jbC0kf0wKPX9BRmxBJydXDOoEkndEx_Gi6eCo';
+  const signature = 'v1.eyJzdWIiOiIxNDU3IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTM0NjU2MjgsImV4cCI6MTc5MzU1MjAyOH0.ey6uBLif7tuceE0L85_vksisyWCYTHiSPKOfXSic4t8';
 </script>
 
 Since April, people have told us their bookings land on the wrong day: a month flipped. By
 4 October the desk had **412 reports**.
 
 **Merged as one issue.** The parser reads dates month first, and our tenants write the day
-first. The fix is queued.
+first.
 
-**Update (2026-10-31):** Detailed triage split #4471 into two distinct GitHub issues:
-- **Issue #1 (379 reports):** Backend parser month-first assumption across 11 day-first tenants.
-- **Issue #2 (33 reports):** Frontend booking-v3 MM/DD/YYYY placeholder hint across 3 day-first tenants.
-See full analysis in [4471-split](/kb/incidents/4471-split).
+## Engineering Update (Closed 05 Oct)
+
+- **parser (379 reports):** **fixed** · `fix(dates): parse dd/mm for eu locales`
+- **hint (33 reports):** **won't fix** · `booking-v3 form retired`
 
 <Callout>
-Known. Split into Issue #1 (parser: 379 reports) and Issue #2 (hint: 33 reports).
+Closed 05 Oct. Parser bug fixed in core service; booking-v3 form retired, eliminating placeholder hint bug.
 </Callout>
 
 ## What was merged
@@ -43,6 +43,6 @@ Known. Split into Issue #1 (parser: 379 reports) and Issue #2 (hint: 33 reports)
 
 - A big ticket is mostly one bug reported many times. Merge early, count once.
 - Write the page while the queue is still in your head.
-- Split multi-cause tickets into separate engineering issues with exact counts.
+- When root causes split, close each issue with its real disposition.
 
 <RenderStamp {signature} />
