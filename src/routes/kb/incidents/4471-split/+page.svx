@@ -2,7 +2,7 @@
 layout: runbook
 title: '#4471 split · dates parse mm/dd in eu locales and booking-v3 form placeholder hint'
 owner: Patryk Klesta
-signature: Patryk Klesta
+signature: v1.eyJzdWIiOiIxNDU3IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTM0NjU1MTgsImV4cCI6MTc5MzU1MTkxOH0.ZuFTz_jbC0kf0wKPX9BRmxBJydXDOoEkndEx_Gi6eCo
 status: accepted
 reviewed: 2026-10-31
 ---
@@ -13,7 +13,7 @@ reviewed: 2026-10-31
   import Callout from '#lib/kb/Callout.svelte';
   import RenderStamp from '#lib/kb/RenderStamp.svelte';
 
-  const signature = 'Patryk Klesta';
+  const signature = 'v1.eyJzdWIiOiIxNDU3IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTM0NjU1MTgsImV4cCI6MTc5MzU1MTkxOH0.ZuFTz_jbC0kf0wKPX9BRmxBJydXDOoEkndEx_Gi6eCo';
 </script>
 
 Ticket #4471 merged 412 incoming customer reports about dates landing on the wrong day.
@@ -51,11 +51,11 @@ day-first configuration parses the month as the day, inverting the booking date.
 
 ## Cause Breakdown for #4471
 
-<CauseTable ticket={4471} />
+<CauseTable ticket=4471 />
 
 ## Incident Queue Timeline
 
-<QueueTimeline ticket={4471} />
+<QueueTimeline ticket=4471 />
 
 ## Lessons for Support & Engineering
 
