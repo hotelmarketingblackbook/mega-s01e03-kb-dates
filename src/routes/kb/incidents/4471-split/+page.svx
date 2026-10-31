@@ -1,0 +1,65 @@
+---
+layout: runbook
+title: '#4471 split · dates parse mm/dd in eu locales and booking-v3 form placeholder hint'
+owner: Patryk Klesta
+signature: Patryk Klesta
+status: accepted
+reviewed: 2026-10-31
+---
+
+<script>
+  import CauseTable from '#lib/kb/CauseTable.svelte';
+  import QueueTimeline from '#lib/kb/QueueTimeline.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+
+  const signature = 'Patryk Klesta';
+</script>
+
+Ticket #4471 merged 412 incoming customer reports about dates landing on the wrong day.
+While merging by subject under Decision 0001 enabled rapid triage during morning incident peaks,
+detailed investigation demonstrates that two distinct engineering defects are conflated in #4471.
+
+We have filed two separate issues on GitHub:
+- **Issue #1 (379 reports):** Shared calendar parser assumes month-first format (MM/DD) in European and day-first locales.
+- **Issue #2 (33 reports):** Booking-v3 form component displays a hardcoded MM/DD/YYYY placeholder hint to users in day-first locales.
+
+<Callout>
+Resolved conflation: Split #4471 into two isolated root causes with separate reproduction and repair paths.
+</Callout>
+
+## The Two Defects
+
+### 1. Parser Month-First Assumption (Issue #1 · 379 reports)
+The backend parser reads all dates month-first (`MM/DD`). For European and day-first locales
+(`da-DK`, `pl-PL`, `cs-CZ`, `nl-NL`, `de-DE`, `it-IT`, `pt-PT`, `es-ES`, `en-GB`, `en-IE`, `fr-FR`),
+appointments on days 1–12 are inverted (e.g. 7 April becomes 4 July).
+- **Volume:** 379 reports (92.0% of queue)
+- **Tenants (11):** `alder.physio`, `copper.studio`, `harbour.dental`, `kettle.books`, `lantern.row`, `long.table`, `morrow.tax`, `nine.lanterns`, `pale.harbour`, `ridge.clinic`, `stone.and.sons`
+- **Channels:** App (204), Email (150), Form (25)
+- **Time Window:** 2026-04-01 to 2026-10-04
+- **Desk Notes:** 5 reports (`R-41202`, `R-41209`, `R-41236`, `R-41344`, `R-41620`) were noted as one-day shifts, but correctly belong under parser logic.
+
+### 2. Booking-v3 Placeholder Hint Mismatch (Issue #2 · 33 reports)
+In the `booking-v3` web frontend, the date input field renders a hardcoded `MM/DD/YYYY` helper label.
+Users in day-first locales dutifully follow the prompt and type the month first. When submitted, the tenant's
+day-first configuration parses the month as the day, inverting the booking date.
+- **Volume:** 33 reports (8.0% of queue)
+- **Tenants (3):** `alder.physio` (de-DE), `copper.studio` (es-ES), `pale.harbour` (pt-PT)
+- **Channels:** 100% web Form (33)
+- **Time Window:** 2026-04-17 to 2026-09-22
+
+## Cause Breakdown for #4471
+
+<CauseTable ticket={4471} />
+
+## Incident Queue Timeline
+
+<QueueTimeline ticket={4471} />
+
+## Lessons for Support & Engineering
+
+- Merging by subject line is essential for high-throughput incident triage, but must be followed by root-cause clustering before assigning fixes.
+- A single user symptom ("my booking is on the wrong date") can stem from backend parsing or frontend input guidance.
+
+<RenderStamp {signature} />
